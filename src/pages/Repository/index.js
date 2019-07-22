@@ -51,9 +51,6 @@ export default class Repository extends Component {
       return <Loading>Carregando</Loading>;
     }
 
-    console.log();
-
-
     return (
       <Container>
         <Owner>

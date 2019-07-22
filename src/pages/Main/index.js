@@ -12,6 +12,7 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
+    notFound: false,
   };
 
   componentDidMount() {
@@ -39,21 +40,29 @@ export default class Main extends Component {
 
     this.setState({
       loading: true,
+      notFound: false,
     });
 
     const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`);
+    try {
+      const response = await api.get(`/repos/${newRepo}`);
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const data = {
+        name: response.data.full_name,
+      };
 
-    this.setState({
-      repositories: [... repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      this.setState({
+        repositories: [... repositories, data],
+        newRepo: '',
+        loading: false,
+      });
+    } catch(error) {
+      this.setState({
+        notFound: true,
+        loading: false,
+      });
+    }
   };
 
   render() {
