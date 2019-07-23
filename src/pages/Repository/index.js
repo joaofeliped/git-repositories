@@ -5,7 +5,7 @@ import api from '../../services/api';
 
 import Container from '../../components/Container';
 
-import { Loading, Owner, IssueList } from './styles';
+import { Loading, Owner, IssueList, IssueFilter } from './styles';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -20,6 +20,11 @@ export default class Repository extends Component {
     repository: {},
     issues: [],
     loading: true,
+    filters: [
+      {label: 'All', state: 'all', active: true},
+      {label: 'Open', state: 'open', active: false},
+      {label: 'Closed', state: 'close', active: false},
+    ]
   };
 
   async componentDidMount() {
@@ -45,7 +50,7 @@ export default class Repository extends Component {
   }
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, filters } = this.state;
 
     if(loading) {
       return <Loading>Carregando</Loading>;
@@ -61,6 +66,11 @@ export default class Repository extends Component {
         </Owner>
 
         <IssueList>
+          <IssueFilter>
+            {filters.map(filter => (
+              <button type="button" key={filter.label}>{filter.label}</button>
+            ))}
+          </IssueFilter>
           {issues.map(issue => (
             <li key={String(issue.id)}>
               <img src={issue.user.avatar_url} alt={issue.user.login}/>
