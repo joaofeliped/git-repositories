@@ -75,5 +75,10 @@ export const List = styled.ul`
       color: #7159c1;
       text-decoration: none;
     }
+
+    button {
+      border: 0;
+      padding: 8px;
+    }
   }
 `;
