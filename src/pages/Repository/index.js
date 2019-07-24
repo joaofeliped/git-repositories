@@ -5,7 +5,7 @@ import api from '../../services/api';
 
 import Container from '../../components/Container';
 
-import { Loading, Owner, IssueList, IssueFilter } from './styles';
+import { Loading, Owner, IssueList, IssueFilter, Pagination } from './styles';
 
 export default class Repository extends Component {
   static propTypes = {
@@ -21,10 +21,12 @@ export default class Repository extends Component {
     issues: [],
     loading: true,
     filters: [
-      {label: 'All', state: 'all', active: true},
-      {label: 'Open', state: 'open', active: false},
-      {label: 'Closed', state: 'close', active: false},
-    ]
+      {label: 'Todas', state: 'all', active: true},
+      {label: 'Abertas', state: 'open', active: false},
+      {label: 'Fechadas', state: 'closed', active: false},
+    ],
+    filterIndex: 0,
+    page: 1,
   };
 
   async componentDidMount() {
@@ -37,7 +39,7 @@ export default class Repository extends Component {
       api.get(`/repos/${repoName}/issues`, {
         params: {
           state: 'open',
-          per_page: 5,
+          per_page: 30,
         }
       }),
     ]);
@@ -49,8 +51,49 @@ export default class Repository extends Component {
     })
   }
 
+  handleIssueFilter = async index => {
+    await this.setState({
+      page: 1,
+      filterIndex: index,
+      loading: true,
+    });
+
+    this.loadIssues();
+  }
+
+  loadIssues = async () => {
+    const { match } = this.props;
+    const { filters, filterIndex, page } = this.state;
+
+    const repoName = decodeURIComponent(match.params.repository);
+
+    const issues = await api.get(`/repos/${repoName}/issues`, {
+      params: {
+        state: filters[filterIndex].state,
+        per_page: 30,
+        page
+      }
+    });
+
+    this.setState({
+      issues: issues.data,
+      loading: false,
+    });
+  }
+
+  handlePagination = async action => {
+    const { page } = this.state;
+
+    this.setState({
+      page: action === 'last' ? page -1 : page + 1,
+      loading: true,
+    });
+
+    this.loadIssues();
+  }
+
   render() {
-    const { repository, issues, loading, filters } = this.state;
+    const { repository, issues, loading, filters, filterIndex, page } = this.state;
 
     if(loading) {
       return <Loading>Carregando</Loading>;
@@ -66,9 +109,10 @@ export default class Repository extends Component {
         </Owner>
 
         <IssueList>
-          <IssueFilter>
-            {filters.map(filter => (
-              <button type="button" key={filter.label}>{filter.label}</button>
+          <IssueFilter active={filterIndex}>
+            {filters.map((filter, index) => (
+              <button type="button" key={filter.state}
+                onClick={() => this.handleIssueFilter(index)}>{filter.label}</button>
             ))}
           </IssueFilter>
           {issues.map(issue => (
@@ -86,6 +130,10 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+        <Pagination>
+           <button type="button" disabled={page < 2} onClick={() => this.handlePagination('last')}>Anterior</button>
+           <button type="button" onClick={() => this.handlePagination('next')}>Próximo</button>
+        </Pagination>
       </Container>
     );
   }

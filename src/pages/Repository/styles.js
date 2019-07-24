@@ -46,25 +46,13 @@ export const IssueFilter = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 15px;
-
-  button {
-    border-radius: 4px;
-    outline: 0;
-    border: 0;
-    margin: 0 15px;
-  }
-`;
-
-export const IssueFilter2 = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-bottom: 15px;
   button {
     border-radius: 4px;
     outline: 0;
     border: 0;
     padding: 8px;
     margin: 0 0.25rem;
+
     &:nth-child(${props => props.active + 1}) {
       background: #576574;
       color: white;
@@ -130,4 +118,25 @@ export const IssueList = styled.ul`
         color: #999;
       }
     }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 15px;
+
+  button {
+    border: 0;
+    outline: 0;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+    padding: 8px;
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
 `;
