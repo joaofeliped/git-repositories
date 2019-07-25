@@ -18,7 +18,7 @@ export default class Main extends Component {
   componentDidMount() {
     const repositories = localStorage.getItem('repositories');
 
-    if(repositories) {
+    if (repositories) {
       this.setState({ repositories: JSON.parse(repositories) });
     }
   }
@@ -26,14 +26,14 @@ export default class Main extends Component {
   componentDidUpdate(_, prevState) {
     const { repositories } = this.state;
 
-    if(prevState.repositories !== repositories) {
+    if (prevState.repositories !== repositories) {
       localStorage.setItem('repositories', JSON.stringify(repositories));
     }
   }
 
   handleInputChange = e => {
     this.setState({ newRepo: e.target.value });
-  }
+  };
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -48,7 +48,7 @@ export default class Main extends Component {
     try {
       const duplicateRepo = repositories.find(repo => repo.name === newRepo);
 
-      if(duplicateRepo) {
+      if (duplicateRepo) {
         throw 'Repositório Duplicado';
       }
 
@@ -59,11 +59,11 @@ export default class Main extends Component {
       };
 
       this.setState({
-        repositories: [... repositories, data],
+        repositories: [...repositories, data],
         newRepo: '',
         loading: false,
       });
-    } catch(error) {
+    } catch (error) {
       this.setState({
         error: true,
       });
@@ -80,9 +80,9 @@ export default class Main extends Component {
     const newRepos = repositories.filter(repo => repo.name !== repository.name);
 
     this.setState({
-      repositories: newRepos
-    })
-  }
+      repositories: newRepos,
+    });
+  };
 
   render() {
     const { newRepo, repositories, loading, error } = this.state;
@@ -95,21 +95,37 @@ export default class Main extends Component {
         </h1>
 
         <Form onSubmit={this.handleSubmit} error={error}>
-          <input value={newRepo}
+          <input
+            value={newRepo}
             onChange={this.handleInputChange}
-            type="text" placeholder="Adicionar repositório"/>
+            type="text"
+            placeholder="Adicionar repositório"
+          />
 
           <SubmitButton loading={loading}>
-            { loading ? <FaSpinner color="#FFF" size={14}/> : <FaPlus color="#FFF" size={14} /> }
+            {loading ? (
+              <FaSpinner color="#FFF" size={14} />
+            ) : (
+              <FaPlus color="#FFF" size={14} />
+            )}
           </SubmitButton>
         </Form>
 
         <List>
           {repositories.map(repository => (
             <li key={repository.name}>
-               <span>{repository.name}</span>
-               <Link to={`/repository/${encodeURIComponent(repository.name)}`}>Detalhes</Link>
-               <button type="button" onClick={() => this.handleDelete(repository)}>Remover</button>
+              <span>{repository.name}</span>
+              <div>
+                <Link to={`/repository/${encodeURIComponent(repository.name)}`}>
+                  Detalhes
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => this.handleDelete(repository)}
+                >
+                  Remover
+                </button>
+              </div>
             </li>
           ))}
         </List>

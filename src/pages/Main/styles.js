@@ -71,14 +71,22 @@ export const List = styled.ul`
       border-top: 1px solid #eee;
     }
 
-    a {
-      color: #7159c1;
-      text-decoration: none;
-    }
 
-    button {
-      border: 0;
-      padding: 8px;
+    div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      a {
+        color: #7159c1;
+        text-decoration: none;
+        margin-right: 10px;
+      }
+
+      button {
+        border: 0;
+        padding: 8px;
+      }
     }
   }
 `;
